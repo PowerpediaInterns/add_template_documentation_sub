@@ -64,6 +64,7 @@ def modify_pages(url: str) -> None:
 
 	# Adds template to the page if needed
 	for page in pages:
+		# TODO detect if title is already a /doc
 		curr_title = page["title"] + "/doc"
 		add_template(curr_title)
 
