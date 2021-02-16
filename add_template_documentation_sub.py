@@ -5,8 +5,6 @@ import urllib3
 
 # Template to append to pages
 TEMPLATE = "{{documentation subpage}}"
-# Used to prevent a lot of empty space when printing to the console
-TEMPLATE_NO_NEWLINE = TEMPLATE.replace("\n", "")
 
 # The namespace to retrieve pages from
 # https://www.mediawiki.org/wiki/Manual:Namespace#Built-in_namespaces to see available namespaces
@@ -64,8 +62,13 @@ def modify_pages(url: str) -> None:
 
 	# Adds template to the page if needed
 	for page in pages:
-		# TODO detect if title is already a /doc
-		curr_title = page["title"] + "/doc"
+		# Detects if title is already a /doc
+		temp_title = page["title"]
+		if re.search('/doc$', temp_title):
+			curr_title = temp_title
+		else:
+			curr_title = page["title"] + "/doc"
+
 		add_template(curr_title)
 
 	if "continue" in pages_json:
@@ -84,8 +87,11 @@ def modify_pages(url: str) -> None:
 
 		# Adds template to the page if needed
 		for page in pages:
-			curr_title = page["title"] + "/doc"
-			add_template(curr_title)
+			# Detects if title is already a /doc
+			temp_title = page["title"]
+			if not(re.search('/doc$', temp_title)):
+				curr_title = page["title"] + "/doc"
+				add_template(curr_title)
 
 		# Extracting title to continue iterating from
 		if "continue" in pages_json:
@@ -123,12 +129,12 @@ def add_template(title: str) -> None:
 	page_text = page.text
 
 	if not(has_template(page_text)):
-		print("'%s' not in '%s'... Adding" % (TEMPLATE_NO_NEWLINE, page))
-		# page_text = u''.join((page_text, TEMPLATE))
-		# page.text = page_text
-		# page.save(u"Tagged with: " + TEMPLATE_NO_NEWLINE, botflag=True)
+		print("'%s' not in '%s'... Adding" % (TEMPLATE, page))
+		page_text = u'\n\n'.join((TEMPLATE, page_text))
+		page.text = page_text
+		page.save(u"Tagged with: " + TEMPLATE, botflag=True)
 	else:
-		print("'%s' already in '%s'... Skipping." % (TEMPLATE_NO_NEWLINE, page))
+		print("'%s' already in '%s'... Skipping." % (TEMPLATE, page))
 
 
 def main() -> None:
