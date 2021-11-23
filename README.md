@@ -12,5 +12,8 @@ https://www.mediawiki.org/wiki/Manual:Namespace#Built-in_namespaces to see avail
 ### PAGES_LIMIT
 The number of pages that will be extracted at a time. Used in get_params() in params for "aplimit".
 
-### TEXT_FILE
-The text file that the program reads and writes the last page title to continue from.
+### REV_PAGE
+The page that the program reads and writes the last page title to continue from.
+
+### DEVELOPMENT_ENV
+A toggle for https validation. 
